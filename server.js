@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
-const routes = require('./routes/routes');
-//const itemsRoutes = require('./routes/items');
+const routes = require('./routes/categories');
+const itemsRoutes = require('./routes/items');
 
 app.use('/', routes);
-//app.use('/items', itemsRoutes);
+app.use('/items', itemsRoutes);
 
 const port = 3000;
 const startup = async() => {

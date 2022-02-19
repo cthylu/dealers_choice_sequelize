@@ -13,10 +13,13 @@ router.get('/categories', async(req, res, next) => {
             <body>
                 <h1>The Legend of Zelda Item Wiki for Breath of the Wild</h1>
                 <p>On all adventures, both free-roaming and guided, there are items for Link to grab and use in the world. Check out some of them here!</p>
+                
                 <h2>Categories</h2>
                 <div>${categories.map(category => {
                     return `<div><a href="/categories/${category.id}">${category.name}</a></div>`;
                 }).join('')}</div>
+
+                <p><a href="/items">See All Items >></a></p>
                 <h3>[JSON info for debugging]</h3>
                 <div>${JSON.stringify(categories)}</div>
             </body>
@@ -31,8 +34,17 @@ router.get('/categories', async(req, res, next) => {
 
 router.get('/categories/:id', async(req, res, next) => {
     try {
-        const category = await Category.findAll({
+        const items = await Item.findAll({
+            where: {
+                categoryId: req.params.id
+            }
         });
+        const categories = await Category.findAll({
+            where: {
+                id: req.params.id
+            }
+        });
+        const category = categories[0];
         const html = `
         <html>
             <body>
@@ -40,10 +52,15 @@ router.get('/categories/:id', async(req, res, next) => {
                 
                 <h3>Category: ${category.name}</h3>
                 <div><p>${category.description}</p></div>
+
+                <div>${items.map(item => {
+                    return `<div><a href="/items/${item.id}">${item.name}</a></div>`;
+                }).join('')}</div>
+                <p><a href="/categories"><< All Categories</a></p>
             </body>
         </html>
         `
-        res.send(category);
+        res.send(html);
     } catch(err) {
         next(err);
     }
